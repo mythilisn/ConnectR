@@ -39,7 +39,7 @@ connectR lets students upload, discover, and manage academic notes across semest
 ## Getting Started
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/mythilisn/ConnectR.git
 cd connectR
 python -m venv venv
 venv\Scripts\activate        # Windows
@@ -66,10 +66,5 @@ GEMINI_API_KEY=your_gemini_key
 - [ ] Student performance analytics
 - [ ] Support more document formats
 
-## Contributing
 
-Contributions are welcome — fork the repo and submit a pull request.
 
-## License
-
-MIT
