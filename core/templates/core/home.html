@@ -1,0 +1,1147 @@
+
+<!-- <head>
+    <title>connectR - Home</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Welcome to connectR!</h1>
+
+    {% if user.is_authenticated %}
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <p>Hello, {{ user.username }}!</p>
+            <a href="{% url 'upload' %}" class="button">Upload Note</a>
+            <a href="{% url 'logout' %}" class="button">Logout</a>
+        </div>
+    {% else %}
+        <div class="button-container">
+            <a href="{% url 'login' %}" class="button">Login</a>
+            <a href="{% url 'register' %}" class="button">Register</a>
+        </div>
+    {% endif %}
+
+    <hr>
+    <h2 style="text-align: center;">Latest Notes</h2>
+    <div class="notes-container">
+        {% for note in notes %}
+            <div class="note-card">
+                <p class="module">Module 1</p>
+                <p class="subject"><strong>Subject:</strong> {{ note.get_subject_display }}</p>
+                <p class="uploaded-by"><strong>Uploaded by:</strong> {{ note.uploaded_by.username }}</p>
+                <p class="description">{{ note.description }}</p>
+                <a href="{{ note.file.url }}" class="download-link">Download</a>
+            </div>
+        {% empty %}
+            <p>No notes available yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html> -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectR - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color Palette - Modern Purple & Blue Theme */
+        :root {
+            --primary: #6200EA; /* Deep Purple */
+            --primary-light: #B388FF; /* Light Purple */
+            --secondary: #2979FF; /* Vibrant Blue */
+            --accent: #00C853; /* Fresh Green for CTAs */
+            --background: #F5F7FA; /* Light Gray-Blue */
+            --card-bg: #FFFFFF; /* White */
+            --text-primary: #212121; /* Almost Black */
+            --text-secondary: #5F6368; /* Medium Gray */
+            --text-light: #FFFFFF; /* White */
+            --border-light: #E0E0E0; /* Light Gray */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header & Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 0px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Area */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #4A4A4A; /* Fallback color */
+            background-image: linear-gradient(135deg, rgba(98, 0, 234, 0.8), rgba(41, 121, 255, 0.8));
+            border-radius: 12px;
+            padding: 60px 40px;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(98, 0, 234, 0.15);
+        }
+
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: var(--text-light);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: 300;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: var(--text-light);
+            opacity: 0.9;
+        }
+
+        /* User Panel */
+        .user-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Auth Panel (for non-logged in users) */
+        .auth-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-panel h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .auth-panel p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #00B046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,200,83,0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(98,0,234,0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Section Titles */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            width: 5px;
+            background-color: var(--primary);
+            border-radius: 5px;
+        }
+
+        .view-all {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .view-all:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* Notes Grid */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+
+        .note-header {
+            padding: 15px;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            color: white;
+            position: relative;
+        }
+
+        .module-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255,255,255,0.3);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .note-subject {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .note-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .note-meta i {
+            font-size: 0.75rem;
+        }
+
+        .note-body {
+            padding: 20px;
+        }
+
+        .note-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 4.5em;
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #00B046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,200,83,0.2);
+        }
+
+        .file-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-type i {
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border-light);
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .user-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .button-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 40px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">
+                <i class="fas fa-book-reader"></i>
+                <h1>connect-r</h1>
+            </a>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Home</a>
+                <a href="#"><i class="fas fa-compass"></i> Explore</a>
+                <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="hero">
+            <div class="hero-content">
+                <h2>Share Knowledge, Connect Minds</h2>
+                <p>Join our community of learners and share your notes, presentations, and documents with peers around the world.</p>
+                <a href="#" class="btn btn-primary"><i class="fas fa-rocket"></i> Get Started</a>
+            </div>
+        </div>
+
+        
+        {% if user.is_authenticated %}
+            <div class="user-panel">
+                <div class="user-greeting">
+                    <div class="user-avatar">{{ user.username.0|upper }}</div>
+                    <div class="user-info">
+                        <h3>Hello, {{ user.username }}!</h3>
+                        <p>What would you like to share today?</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <a href="{% url 'upload' %}" class="btn btn-primary"><i class="fas fa-cloud-upload-alt"></i> Upload Note</a>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="auth-panel">
+                <h3>Join Our Community</h3>
+                <p>Sign up or log in to start sharing your notes and accessing resources from other students.</p>
+                <div class="button-group">
+                    <a href="{% url 'login' %}" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-secondary"><i class="fas fa-user-plus"></i> Register</a>
+                </div>
+            </div>
+        {% endif %}
+
+        
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connectR - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color Palette - Modern Purple & Blue Theme */
+        :root {
+            --primary: #6200EA; /* Deep Purple */
+            --primary-light: #B388FF; /* Light Purple */
+            --secondary: #2979FF; /* Vibrant Blue */
+            --accent: #00C853; /* Fresh Green for CTAs */
+            --background: #F5F7FA; /* Light Gray-Blue */
+            --card-bg: #FFFFFF; /* White */
+            --text-primary: #212121; /* Almost Black */
+            --text-secondary: #5F6368; /* Medium Gray */
+            --text-light: #FFFFFF; /* White */
+            --border-light: #E0E0E0; /* Light Gray */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Header & Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 0px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Area */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: #4A4A4A; /* Fallback color */
+            background-image: linear-gradient(135deg, rgba(98, 0, 234, 0.8), rgba(41, 121, 255, 0.8));
+            border-radius: 12px;
+            padding: 60px 40px;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(98, 0, 234, 0.15);
+        }
+
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: var(--text-light);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: 300;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: var(--text-light);
+            opacity: 0.9;
+        }
+
+        /* User Panel */
+        .user-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Auth Panel (for non-logged in users) */
+        .auth-panel {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-panel h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .auth-panel p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Login message styling */
+        .login-message {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            padding: 10px;
+            border-top: 1px solid var(--border-light);
+            width: 100%;
+        }
+        
+        .login-message a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .login-message a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #00B046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,200,83,0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(98,0,234,0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Section Titles */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .section-title h2 {
+            color: var(--primary);
+            font-size: 1.6rem;
+            font-weight: 600;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 70%;
+            width: 5px;
+            background-color: var(--primary);
+            border-radius: 5px;
+        }
+
+        .view-all {
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .view-all:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* Notes Grid */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .note-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+
+        .note-header {
+            padding: 15px;
+            background: linear-gradient(to right, var(--primary-light), var(--secondary));
+            color: white;
+            position: relative;
+        }
+
+        .module-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: rgba(255,255,255,0.3);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .note-subject {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .note-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+        }
+
+        .note-meta i {
+            font-size: 0.75rem;
+        }
+
+        .note-body {
+            padding: 20px;
+        }
+
+        .note-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 4.5em;
+        }
+
+        .note-met {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 4.5em;
+
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #00B046;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,200,83,0.2);
+        }
+
+        .file-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .file-type i {
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border-light);
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Explore Notes Button - Centered at Bottom */
+        .explore-notes-section {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .user-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .button-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 40px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="logo">
+                <i class="fas fa-book-reader"></i>
+                <h1>connectR</h1>
+            </a>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Home</a>
+                <a href="#"><i class="fas fa-compass"></i> Explore</a>
+                <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h2>Share Knowledge, Connect Minds</h2>
+                <p>Join our community of learners and share your notes, presentations, and documents with peers around the world.</p>
+                <button href="#" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Welcome
+                </button>
+            </div>
+        </div>
+
+        <!-- User Authentication Section -->
+        {% if user.is_authenticated %}
+            <div class="user-panel">
+                <div class="user-greeting">
+                    <div class="user-avatar">{{ user.username.0|upper }}</div>
+                    <div class="user-info">
+                        <h3>Hello, {{ user.username }}!</h3>
+                        <p>What would you like to share today?</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <a href="{% url 'upload' %}" class="btn btn-primary"><i class="fas fa-cloud-upload-alt"></i> Upload Note</a>
+                    <a href="{% url 'explore_notes' %}" class="btn btn-primary"><i class="fas fa-search"></i> Explore Notes</a>
+                    <a href="{% url 'user_dashboard' %}" class="btn btn-primary">Dashboard</a>
+                    <a href="{% url 'edit_profile' %}" class="btn btn-primary"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="auth-panel">
+                <h3>Join Our Community</h3>
+                <p>Sign up or log in to start sharing your notes and accessing resources from other students.</p>
+                <div class="button-group" style="justify-content: center; width: 100%;">
+                    <a href="{% url 'login' %}" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-secondary"><i class="fas fa-user-plus"></i> Register</a>
+                    
+
+                </div>
+                <div class="login-message">
+                    Log in or register to explore notes shared by the community.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+   
+</body>
+</html>

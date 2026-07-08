@@ -1,0 +1,1189 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* Modern Note Details Interface - Based on Explore Notes Styling */
+
+  /* Color Variables */
+  :root {
+    --primary-color: #667eea;
+    --primary-dark: #5a67d8;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --danger-color: #f56565;
+    --dark-color: #2d3748;
+    --light-gray: #f7fafc;
+    --medium-gray: #e2e8f0;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  /* Base Styles */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* Main container */
+  .note-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--text-primary);
+  }
+
+  /* Note Header Card */
+  .note-header-card {
+    background: var(--gradient-card);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .note-header-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-primary);
+  }
+
+  /* Title */
+  .note-title {
+    font-size: 3rem;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  /* Upload date */
+  .upload-date {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Author info */
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 15px;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+  }
+  .author-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: var(--shadow-md);
+    border: 3px solid var(--white);
+  }
+  .author-info div p:first-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .author-info div p:last-child {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0.25rem 0 0 0;
+  }
+
+  /* Tags & Subject */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+  .tag {
+    background: var(--gradient-secondary);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+  }
+  .tag:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(110%);
+  }
+  .tag i {
+    font-size: 0.8rem;
+  }
+  .tag.subject {
+    background: var(--gradient-primary);
+  }
+  .tag.tag-link {
+    background: var(--success-color);
+  }
+  .tag.stats {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+  }
+
+  /* PDF preview */
+  .pdf-preview {
+    margin-top: 2rem;
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: inset 0 0 15px #00000066;
+  }
+  .pdf-preview iframe {
+    width: 100%;
+    height: 600px;
+  }
+
+  /* Content Cards */
+  .content-card {
+    background: var(--gradient-card);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .content-card h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .content-card h2 i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+  }
+
+  .content-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .stats-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .stats-item i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+  }
+
+  .stats-text {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .stats-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-primary {
+    background: var(--gradient-primary);
+    color: var(--white);
+  }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+  }
+
+  .btn-danger {
+    background: var(--danger-color);
+    color: var(--white);
+  }
+
+  .btn-success {
+    background: var(--success-color);
+    color: var(--white);
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(110%);
+  }
+
+  .btn-secondary:hover {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+
+  .btn-danger:hover {
+    background: #e53e3e;
+  }
+
+  .btn-success:hover {
+    background: #38a169;
+  }
+
+  /* Rating Section */
+  .rating-section {
+    background: var(--gradient-card);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .rating-section h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 2.5rem;
+    color: #fbbf24;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .rating-stars input[type="radio"] {
+    display: none;
+  }
+
+  .rating-stars label span {
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  }
+
+  .rating-stars input[type="radio"]:checked ~ label span,
+  .rating-stars label:hover ~ label span,
+  .rating-stars label:hover span {
+    color: #f59e0b;
+    transform: scale(1.1);
+  }
+
+  .average-rating {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  /* Related Notes */
+  .related-notes {
+    background: var(--gradient-card);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 2rem;
+  }
+
+  .related-notes h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .related-notes h3 i {
+    color: var(--primary-color);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .related-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    display: block;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--medium-gray);
+  }
+
+  .related-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+  }
+
+  .related-card h4 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .related-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  /* Modern Chatbot Interface */
+  .chat-modal {
+    position: fixed;
+    width: 420px;
+    height: 600px;
+    background: var(--gradient-card);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .chat-modal.minimized {
+    height: 60px;
+  }
+
+  .chat-modal.maximized {
+    width: 90vw;
+    height: 90vh;
+    left: 5vw !important;
+    top: 5vh !important;
+  }
+
+  .chat-header {
+    background: var(--gradient-primary);
+    color: var(--white);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .chat-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .chat-title::before {
+    content: '🤖';
+    font-size: 1.2rem;
+  }
+
+  .chat-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .chat-btn, .chat-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+  }
+
+  .chat-btn:hover, .chat-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+    animation: fadeInUp 0.3s ease;
+  }
+
+  .chat-bubble.user {
+    background: var(--gradient-primary);
+    color: var(--white);
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .chat-bubble.bot {
+    background: var(--light-gray);
+    color: var(--text-primary);
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+    border: 1px solid var(--medium-gray);
+  }
+
+  .chat-typing {
+    display: flex;
+    gap: 4px;
+    padding: 1rem 1.25rem;
+    background: var(--light-gray);
+    border-radius: 18px;
+    border-bottom-left-radius: 6px;
+    align-self: flex-start;
+    max-width: 85%;
+    border: 1px solid var(--medium-gray);
+  }
+
+  .chat-typing .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+  }
+
+  .chat-typing .dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .chat-typing .dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+    30% {
+      transform: translateY(-10px);
+      opacity: 1;
+    }
+  }
+
+  .chat-input-row {
+    padding: 1.5rem;
+    background: var(--white);
+    border-top: 1px solid var(--medium-gray);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .chat-input-row input {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: 25px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background: var(--light-gray);
+  }
+
+  .chat-input-row input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: var(--white);
+  }
+
+  .chat-input-row button {
+    padding: 1rem 1.5rem;
+    background: var(--gradient-primary);
+    color: var(--white);
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .chat-input-row button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(110%);
+  }
+
+  .chat-footer-hint {
+    padding: 0.75rem 1.5rem;
+    background: rgba(102, 126, 234, 0.05);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    text-align: center;
+    border-top: 1px solid var(--medium-gray);
+  }
+
+  .chat-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    cursor: nw-resize;
+    border-radius: 20px 0 20px 0;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .chat-resize-handle:hover {
+    opacity: 1;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem;
+    }
+
+    .note-container {
+      margin: 1rem auto;
+    }
+
+    .note-header-card {
+      padding: 1.5rem;
+    }
+
+    .note-title {
+      font-size: 2.25rem;
+    }
+
+    .content-card {
+      padding: 1.5rem;
+    }
+
+    .action-buttons {
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 0.875rem 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .stats-bar {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .tags {
+      justify-content: center;
+    }
+
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* Responsive Chatbot */
+    .chat-modal {
+      width: 95vw;
+      height: 70vh;
+      left: 2.5vw !important;
+      top: 15vh !important;
+    }
+
+    .chat-modal.maximized {
+      width: 100vw;
+      height: 100vh;
+      left: 0 !important;
+      top: 0 !important;
+      border-radius: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .note-title {
+      font-size: 1.875rem;
+    }
+
+    .content-card {
+      padding: 1rem;
+    }
+
+    .note-header-card {
+      padding: 1rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+</style>
+
+<div class="note-container">
+
+  <!-- Note Header Card -->
+  <div class="note-header-card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+      <div style="flex: 1; min-width: 300px;">
+        <h1 class="note-title">{{ note.title }}</h1>
+        <p class="upload-date">
+          <i class="fas fa-calendar-alt"></i>
+          Uploaded on {{ note.uploaded_at|date:"F j, Y" }}
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <span class="tag stats">
+          <i class="fas fa-eye"></i> {{ note.views }} views
+        </span>
+        <span class="tag stats">
+          <i class="fas fa-download"></i> {{ note.downloads }} downloads
+        </span>
+      </div>
+    </div>
+
+    <!-- Author Info -->
+    <div class="author-info">
+      <img src="{{ note.uploaded_by.profile.image.url }}" alt="author" />
+      <div>
+        <p>{{ note.uploaded_by.username }}</p>
+        <p>Note Contributor</p>
+      </div>
+    </div>
+
+    <!-- Subject & Tags -->
+    <div class="tags">
+      <span class="tag subject">
+        <i class="fas fa-book"></i> {{ note.subject }}
+      </span>
+      <span class="tag">
+        <i class="fas fa-layer-group"></i> Semester {{ note.semester }}
+      </span>
+      {% if content_tags %}
+        {% for tag in content_tags %}
+          <a href="{% url 'explore_notes' %}?tag={{ tag|urlencode }}" class="tag tag-link">
+            <i class="fas fa-tag"></i> {{ tag }}
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="content-card">
+    <h2><i class="fas fa-align-left"></i> Description</h2>
+    <p>{{ note.description|linebreaksbr }}</p>
+  </div>
+
+  <!-- AI Summary -->
+  <div class="content-card">
+    <h2><i class="fas fa-brain"></i> AI Summary</h2>
+    {% if note.summary %}
+      <p style="white-space: pre-wrap;">{{ note.summary|linebreaksbr }}</p>
+    {% else %}
+      <p style="color: var(--text-secondary);">No summary generated yet.</p>
+    {% endif %}
+    {% if request.user.is_authenticated and request.user.id == note.uploaded_by.id %}
+    <div style="margin-top: 1.5rem;">
+      <form method="post" action="{% url 'regenerate_summary' note.id %}" style="display:inline;">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="btn btn-secondary">
+          <i class="fas fa-sync-alt"></i> Regenerate Summary
+        </button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stats-item">
+      <i class="fas fa-download"></i>
+      <span class="stats-number">{{ note.downloads }}</span>
+      <span class="stats-text">Downloads</span>
+    </div>
+    <div class="stats-item">
+      <i class="fas fa-clock"></i>
+      <span class="stats-text">Estimated Read:</span>
+      <span class="stats-number">5</span>
+      <span class="stats-text">mins</span>
+    </div>
+    <div class="stats-item">
+      <i class="fas fa-file-alt"></i>
+      <span class="stats-text">File Type:</span>
+      <span class="stats-number">{{ note.file.url|slice:"-3"|upper }}</span>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <a href="{% url 'download_note' note.id %}" class="btn btn-primary">
+      <i class="fas fa-download"></i> Download
+    </a>
+    <button class="btn btn-success" onclick="openChatbot()">
+      <i class="fas fa-robot"></i> AI Chatbot
+    </button>
+    <button class="btn btn-secondary" onclick="generateExam()">
+      <i class="fas fa-file-alt"></i> Generate Exam
+    </button>
+    {% if request.user.is_authenticated and request.user.id == note.uploaded_by.id %}
+    <form method="post" action="{% url 'regenerate_tags' note.id %}" style="display:inline;">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="btn btn-secondary">
+        <i class="fas fa-sync-alt"></i> Regenerate Tags
+      </button>
+    </form>
+    {% endif %}
+    <a href="{% url 'report_note' note.id %}" class="btn btn-danger">
+      <i class="fas fa-flag"></i> Report
+    </a>
+  </div>
+  <!-- Rating Section -->
+  <div class="rating-section">
+    <h3><i class="fas fa-star"></i> Rate This Note</h3>
+    <form method="post" action="{% url 'rate_note' note.id %}" class="rating-stars">
+      {% csrf_token %}
+      {% for star in "12345" %}
+        <label for="star{{ star }}">
+          <input type="radio" id="star{{ star }}" name="rating" value="{{ star }}" onchange="this.form.submit();">
+          <span>⭐</span>
+        </label>
+      {% endfor %}
+    </form>
+    <p class="average-rating">Average Rating: <strong>{{ average_rating|default:"Not rated yet" }}</strong></p>
+  </div>
+
+  <!-- Related Notes -->
+  <div class="related-notes">
+    <h3><i class="fas fa-bookmark"></i> More Notes from {{ note.uploaded_by.username }}</h3>
+    <div class="related-grid">
+      {% for related_note in related_notes %}
+        <a href="{% url 'note_detail' related_note.id %}" class="related-card">
+          <h4>{{ related_note.title }}</h4>
+          <p>{{ related_note.subject }}</p>
+        </a>
+      {% empty %}
+        <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+          <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+          <p>No other notes by this user yet.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- Modern AI Chatbot Modal -->
+<div id="ai-chatbot-modal" class="chat-modal" style="display: none; left: auto; top: auto;">
+    <div class="chat-header" id="chat-drag-handle">
+        <div class="chat-title">AI Tutor</div>
+        <div class="chat-actions">
+            <button class="chat-btn" title="Minimize" onclick="toggleMinimize()">▁</button>
+            <button class="chat-btn" title="Maximize" onclick="toggleMaximize()">▢</button>
+            <button class="chat-close" title="Close" onclick="closeChatbot()">×</button>
+        </div>
+    </div>
+    <div id="chat-messages" class="chat-messages">
+        <div class="chat-bubble bot">👋 Hi! I'm your AI tutor for this document. Ask me anything about the content, concepts, or related topics.</div>
+    </div>
+    <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask a question... (Press Enter to send)" onkeydown="if(event.key==='Enter'){sendMessage()}" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <div class="chat-footer-hint">💡 Tip: I can explain concepts, answer questions, and help you understand the material better.</div>
+    
+    <!-- Loading indicator template -->
+    <div id="typing-template" style="display:none">
+        <div class="chat-typing">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+    </div>
+    <div id="chat-resize-handle" class="chat-resize-handle" title="Drag to resize"></div>
+</div>
+
+<input type="hidden" id="note-id" value="{{ note_id }}"> 
+
+
+<script>
+function openChatbot() {
+    const modal = document.getElementById('ai-chatbot-modal');
+    modal.style.display = 'block';
+    // Restore last position/size if available
+    try {
+        const saved = JSON.parse(localStorage.getItem('chat_modal_state') || '{}');
+        if (saved.left != null && saved.top != null) {
+            modal.style.left = saved.left + 'px';
+            modal.style.top = saved.top + 'px';
+            modal.style.right = 'auto';
+            modal.style.bottom = 'auto';
+        } else {
+            // Default: bottom-right offset
+            const rect = modal.getBoundingClientRect();
+            modal.style.left = (window.innerWidth - rect.width - 24) + 'px';
+            modal.style.top = (window.innerHeight - rect.height - 24) + 'px';
+            modal.style.right = 'auto';
+            modal.style.bottom = 'auto';
+        }
+        if (saved.width && saved.height) {
+            modal.style.width = saved.width + 'px';
+            modal.style.height = saved.height + 'px';
+        }
+        if (saved.maximized) modal.classList.add('maximized');
+        if (saved.minimized) modal.classList.add('minimized');
+    } catch(e) {}
+    enableDrag();
+    enableResize();
+    document.getElementById('chat-input').focus();
+}
+
+function closeChatbot() {
+    document.getElementById('ai-chatbot-modal').style.display = 'none';
+}
+
+function appendBubble(role, text) {
+    const chatMessages = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = `chat-bubble ${role === 'user' ? 'user' : 'bot'}`;
+    // Sanitize and preserve line breaks
+    const safe = String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replace(/\n/g, '<br>');
+    div.innerHTML = (role === 'user' ? 'You: ' : 'AI: ') + safe;
+    chatMessages.appendChild(div);
+    // Defer scroll to ensure layout is committed
+    requestAnimationFrame(()=>{ chatMessages.scrollTop = chatMessages.scrollHeight; });
+}
+
+function showTyping() {
+    const chatMessages = document.getElementById('chat-messages');
+    const el = document.getElementById('typing-template').firstElementChild.cloneNode(true);
+    el.id = 'loading-indicator';
+    chatMessages.appendChild(el);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTyping() {
+    const el = document.getElementById('loading-indicator');
+    if (el) el.remove();
+}
+
+async function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    const noteId = pathSegments[pathSegments.length - 1];
+
+    appendBubble('user', message);
+    input.value = '';
+    showTyping();
+
+    try {
+        const response = await fetch(`/note/${noteId}/chatbot/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        hideTyping();
+        if (!response.ok) {
+            appendBubble('bot', data.error || 'Sorry, something went wrong.');
+        } else {
+            appendBubble('bot', data.response || '');
+        }
+    } catch (err) {
+        hideTyping();
+        appendBubble('bot', 'Network error. Please try again.');
+        console.error('Chat error:', err);
+    }
+}
+
+// Helper function to get the CSRF token for Django security
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function generateExam() {
+    const noteId = document.getElementById('note-id').value;
+    
+    if (!confirm("Are you sure you want to generate a new exam from this PDF? This will consume API tokens.")) {
+        return;
+    }
+
+    // Show a global loading/notification for a long process
+    alert('Generating exam... this may take up to 30 seconds for complex documents. Please wait.'); 
+    const generateBtn = event.currentTarget;
+    generateBtn.disabled = true; 
+    generateBtn.textContent = 'Generating...';
+
+    try {
+        const response = await fetch(`/notes/${noteId}/generate_exam/`, { // Your new Django URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken') 
+            }
+            // No body data needed if the noteId is in the URL
+        });
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            alert(data.message);
+            // After successful generation, redirect the user to view the exam
+            window.location.href = `/exams/${noteId}/`; 
+        } else {
+            alert(`Error: ${data.message}`);
+            generateBtn.textContent = 'Generate Exam';
+        }
+    } catch (error) {
+        alert('An unexpected error occurred during exam generation.');
+        console.error('Exam generation error:', error);
+    } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate Exam';
+    }
+}
+/*<button onclick="openChatbot()">AI Chatbot</button>
+<button onclick="generateExam(event)">Generate Exam</button>
+<input type="hidden" id="note-id" value="{{ note_id }}">*/
+</script>
+
+<script>
+// ---- Draggable / Resizable / Min-Max helpers ----
+function saveModalState(modal){
+  const rect = modal.getBoundingClientRect();
+  const state = {
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height,
+    maximized: modal.classList.contains('maximized'),
+    minimized: modal.classList.contains('minimized')
+  };
+  localStorage.setItem('chat_modal_state', JSON.stringify(state));
+}
+
+function toggleMaximize(){
+  const modal = document.getElementById('ai-chatbot-modal');
+  modal.classList.toggle('maximized');
+  const rect = modal.getBoundingClientRect();
+  if (!modal.classList.contains('maximized')) {
+    modal.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 200)) + 'px';
+    modal.style.top = Math.max(8, Math.min(rect.top, window.innerHeight - 100)) + 'px';
+  }
+  saveModalState(modal);
+}
+
+function toggleMinimize(){
+  const modal = document.getElementById('ai-chatbot-modal');
+  modal.classList.toggle('minimized');
+  saveModalState(modal);
+}
+
+function enableDrag(){
+  const modal = document.getElementById('ai-chatbot-modal');
+  const handle = document.getElementById('chat-drag-handle');
+  let dragging = false; let startX=0, startY=0, startLeft=0, startTop=0;
+  handle.style.cursor = 'move';
+  handle.addEventListener('mousedown', (e)=>{
+    if (modal.classList.contains('maximized')) return;
+    // Do not start drag if user clicked a control button
+    if (e.target.closest('.chat-actions') || e.target.classList.contains('chat-close')) return;
+    dragging = true;
+    startX = e.clientX; startY = e.clientY;
+    const rect = modal.getBoundingClientRect();
+    startLeft = rect.left; startTop = rect.top;
+    document.body.style.userSelect = 'none';
+  });
+  // Double-click header to toggle maximize
+  handle.addEventListener('dblclick', ()=>{ toggleMaximize(); });
+  window.addEventListener('mousemove', (e)=>{
+    if (!dragging) return;
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    modal.style.left = Math.max(0, Math.min(startLeft + dx, window.innerWidth - 160)) + 'px';
+    modal.style.top = Math.max(0, Math.min(startTop + dy, window.innerHeight - 60)) + 'px';
+  });
+  window.addEventListener('mouseup', ()=>{
+    if (!dragging) return; dragging = false; document.body.style.userSelect = '';
+    saveModalState(modal);
+  });
+}
+
+function enableResize(){
+  const modal = document.getElementById('ai-chatbot-modal');
+  const handle = document.getElementById('chat-resize-handle');
+  let resizing = false; let startX=0, startY=0, startW=0, startH=0;
+  handle.addEventListener('mousedown', (e)=>{
+    e.preventDefault();
+    if (modal.classList.contains('maximized')) return;
+    resizing = true;
+    const rect = modal.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY; startW = rect.width; startH = rect.height;
+    document.body.style.userSelect = 'none';
+  });
+  window.addEventListener('mousemove', (e)=>{
+    if (!resizing) return;
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    modal.style.width = Math.max(300, Math.min(startW + dx, window.innerWidth - 20)) + 'px';
+    modal.style.height = Math.max(300, Math.min(startH + dy, window.innerHeight - 20)) + 'px';
+  });
+  window.addEventListener('mouseup', ()=>{
+    if (!resizing) return; resizing = false; document.body.style.userSelect = '';
+    saveModalState(modal);
+  });
+}
+</script>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+{% endblock %}

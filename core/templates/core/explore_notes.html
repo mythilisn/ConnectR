@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Notes Interface Styling */
+
+        /* Color Variables */
+        :root {
+          --primary-color: #667eea;
+          --primary-dark: #5a67d8;
+          --secondary-color: #764ba2;
+          --accent-color: #f093fb;
+          --success-color: #48bb78;
+          --warning-color: #ed8936;
+          --danger-color: #f56565;
+          --dark-color: #2d3748;
+          --light-gray: #f7fafc;
+          --medium-gray: #e2e8f0;
+          --text-primary: #2d3748;
+          --text-secondary: #718096;
+          --white: #ffffff;
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+          --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+          --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+          --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+          --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        /* Base Styles */
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          color: var(--text-primary);
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          min-height: 100vh;
+        }
+
+        .container {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+
+        /* Header Section */
+        .header-section {
+          text-align: center;
+          margin-bottom: 3rem;
+        }
+
+        .main-title {
+          font-size: 3.5rem;
+          font-weight: 800;
+          background: var(--gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin: 0 0 1rem 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+          font-size: 1.2rem;
+          color: var(--text-secondary);
+          margin-bottom: 2rem;
+        }
+
+        /* Section Title */
+        .section-title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+          padding: 0 0.5rem;
+        }
+
+        .section-title h2 {
+          font-size: 2.5rem;
+          font-weight: 700;
+          background: var(--gradient-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin: 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-all {
+          color: var(--primary-color);
+          text-decoration: none;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 50px;
+          background: var(--white);
+          box-shadow: var(--shadow-sm);
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+        }
+
+        .view-all:hover {
+          background: var(--gradient-primary);
+          color: var(--white);
+          box-shadow: var(--shadow-md);
+          transform: translateY(-2px);
+        }
+
+        .view-all i {
+          transition: transform 0.3s ease;
+        }
+
+        .view-all:hover i {
+          transform: translateX(4px);
+        }
+
+        /* Controls Section */
+        .controls-section {
+          display: grid;
+          gap: 2rem;
+          margin-bottom: 3rem;
+        }
+
+        /* Search Form */
+        .search-form {
+          display: flex;
+          gap: 1rem;
+          max-width: 600px;
+          margin: 0 auto;
+          background: var(--white);
+          padding: 1.5rem;
+          border-radius: 20px;
+          box-shadow: var(--shadow-lg);
+          backdrop-filter: blur(10px);
+        }
+
+        .search-input {
+          flex: 1;
+          padding: 1rem 1.5rem;
+          border: 2px solid var(--medium-gray);
+          border-radius: 50px;
+          font-size: 1rem;
+          outline: none;
+          transition: all 0.3s ease;
+          background: var(--light-gray);
+        }
+
+        .search-input:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          background: var(--white);
+        }
+
+        .search-input::placeholder {
+          color: var(--text-secondary);
+        }
+
+        /* Filter Form */
+        .filter-form {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 1.5rem;
+          padding: 2rem;
+          background: var(--white);
+          border-radius: 20px;
+          box-shadow: var(--shadow-lg);
+          backdrop-filter: blur(10px);
+        }
+
+        .filter-group {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .filter-form label {
+          font-weight: 600;
+          color: var(--text-primary);
+          margin-bottom: 0.5rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .filter-form label i {
+          color: var(--primary-color);
+          font-size: 0.9rem;
+        }
+
+        .filter-form select {
+          width: 100%;
+          padding: 1rem;
+          border: 2px solid var(--medium-gray);
+          border-radius: 12px;
+          background: var(--light-gray);
+          font-size: 1rem;
+          outline: none;
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        .filter-form select:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          background: var(--white);
+        }
+
+        .filter-actions {
+          display: flex;
+          gap: 1rem;
+          grid-column: 1 / -1;
+          justify-content: center;
+          margin-top: 1rem;
+        }
+
+        /* Buttons */
+        .btn, .filter-form button {
+          padding: 1rem 2rem;
+          border: none;
+          border-radius: 50px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          text-align: center;
+          justify-content: center;
+        }
+
+        .btn-primary, .filter-form button[type="submit"] {
+          background: var(--gradient-primary);
+          color: var(--white);
+          box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+          background: var(--white);
+          color: var(--primary-color);
+          border: 2px solid var(--primary-color);
+        }
+
+        .btn-primary:hover, .filter-form button[type="submit"]:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+          filter: brightness(110%);
+        }
+
+        .btn-secondary:hover {
+          background: var(--primary-color);
+          color: var(--white);
+          transform: translateY(-2px);
+        }
+
+        /* Tag Cloud */
+        .tag-cloud {
+          margin: 2rem 0;
+          text-align: center;
+        }
+        
+        .tag-cloud h3 {
+          font-size: 1.25rem;
+          color: var(--text-primary);
+          margin-bottom: 1rem;
+          font-weight: 600;
+        }
+        
+        .tag-cloud-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          justify-content: center;
+        }
+        
+        .tag {
+          display: inline-block;
+          padding: 0.35rem 0.75rem;
+          background: var(--light-gray);
+          color: var(--text-secondary);
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          border: 1px solid var(--medium-gray);
+        }
+        
+        .tag:hover {
+          background: var(--primary-color);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm);
+        }
+        
+        .tag.active {
+          background: var(--primary-color);
+          color: white;
+          border-color: var(--primary-dark);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background: var(--white);
+          padding: 1.5rem 2rem;
+          border-radius: 15px;
+          box-shadow: var(--shadow-md);
+          margin-bottom: 2rem;
+        }
+
+        .stats-item {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+
+        .stats-item i {
+          color: var(--primary-color);
+          font-size: 1.2rem;
+        }
+
+        .stats-text {
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .stats-number {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--primary-color);
+        }
+
+        /* Notes Grid */
+        .notes-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+          gap: 2rem;
+          margin-top: 2rem;
+        }
+
+        /* Note Card */
+        .note-card {
+          background: var(--gradient-card);
+          border-radius: 20px;
+          padding: 2rem;
+          box-shadow: var(--shadow-lg);
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(10px);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .note-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 4px;
+          background: var(--gradient-primary);
+        }
+
+        .note-card:hover {
+          transform: translateY(-8px);
+          box-shadow: var(--shadow-xl);
+        }
+
+        /* Note Header */
+        .note-header {
+          margin-bottom: 1.5rem;
+        }
+
+        .note-badges {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .module-badge {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          background: var(--gradient-secondary);
+          color: var(--white);
+          border-radius: 50px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .semester-badge {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          background: var(--gradient-primary);
+          color: var(--white);
+          border-radius: 50px;
+          font-size: 0.875rem;
+          font-weight: 600;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .note-subject {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: 0.5rem 0;
+          line-height: 1.3;
+        }
+
+        .note-meta {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+          font-weight: 500;
+          flex-wrap: wrap;
+        }
+
+        .meta-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .meta-item i {
+          color: var(--primary-color);
+        }
+
+        /* Note Body */
+        .note-body {
+          margin-bottom: 1.5rem;
+        }
+
+        .note-description, .note-title {
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin-bottom: 1rem;
+        }
+
+        .note-description {
+          font-size: 1rem;
+        }
+
+        .note-title {
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: 1.1rem;
+        }
+
+        /* Note Actions */
+        .note-actions {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 1.5rem;
+          border-top: 1px solid var(--medium-gray);
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .action-buttons {
+          display: flex;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        .download-btn {
+          background: var(--gradient-primary);
+          color: var(--white);
+          padding: 0.75rem 1.5rem;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transition: all 0.3s ease;
+          box-shadow: var(--shadow-sm);
+          font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+          filter: brightness(110%);
+        }
+
+        .view-btn {
+          color: var(--primary-color);
+          text-decoration: none;
+          font-weight: 600;
+          padding: 0.75rem 1rem;
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          font-size: 0.9rem;
+          border: 2px solid transparent;
+        }
+
+        .view-btn:hover {
+          background: var(--light-gray);
+          color: var(--primary-dark);
+          border-color: var(--primary-color);
+        }
+
+        .file-type {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--danger-color);
+          font-weight: 600;
+          font-size: 0.9rem;
+          padding: 0.5rem 1rem;
+          background: rgba(245, 101, 101, 0.1);
+          border-radius: 50px;
+        }
+
+        /* Empty State */
+        .empty-state {
+          text-align: center;
+          padding: 4rem 2rem;
+          background: var(--white);
+          border-radius: 20px;
+          box-shadow: var(--shadow-lg);
+          grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+          font-size: 4rem;
+          color: var(--text-secondary);
+          margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+          font-size: 1.5rem;
+          color: var(--text-primary);
+          margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+          color: var(--text-secondary);
+          margin-bottom: 2rem;
+          font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          body {
+            padding: 1rem;
+          }
+          
+          .main-title {
+            font-size: 2.5rem;
+          }
+          
+          .section-title {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+          }
+          
+          .section-title h2 {
+            font-size: 2rem;
+          }
+          
+          .search-form {
+            flex-direction: column;
+            padding: 1rem;
+          }
+          
+          .filter-form {
+            grid-template-columns: 1fr;
+            padding: 1.5rem;
+          }
+          
+          .filter-actions {
+            flex-direction: column;
+          }
+          
+          .stats-bar {
+            flex-direction: column;
+            gap: 1rem;
+          }
+          
+          .notes-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+          
+          .note-card {
+            padding: 1.5rem;
+          }
+          
+          .note-actions {
+            flex-direction: column;
+            gap: 1rem;
+          }
+          
+          .action-buttons {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .main-title {
+            font-size: 2rem;
+          }
+          
+          .section-title h2 {
+            font-size: 1.75rem;
+          }
+          
+          .note-card {
+            padding: 1rem;
+          }
+          
+          .search-form, .filter-form {
+            padding: 1rem;
+          }
+
+          .notes-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        /* Animation Classes */
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .note-card {
+          animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .note-card:nth-child(2) { animation-delay: 0.1s; }
+        .note-card:nth-child(3) { animation-delay: 0.2s; }
+        .note-card:nth-child(4) { animation-delay: 0.3s; }
+        .note-card:nth-child(5) { animation-delay: 0.4s; }
+        .note-card:nth-child(6) { animation-delay: 0.5s; }
+
+        /* Focus Styles for Accessibility */
+        button:focus,
+        select:focus,
+        input:focus,
+        a:focus {
+          outline: 2px solid var(--primary-color);
+          outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="main-title">
+                <i class="fas fa-graduation-cap"></i>
+                Notes Explorer
+            </h1>
+            <p class="subtitle">Discover, share, and access quality study materials from your peers</p>
+        </div>
+
+        <!-- Section Title -->
+        <div class="section-title">
+            <h2><i class="fas fa-book-open"></i> Latest Notes</h2>
+            <a href="#" class="view-all">
+                <i class="fas fa-th-large"></i>
+                View All 
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <!-- Search Form -->
+            <form method="GET" action="{% url 'explore_notes' %}" class="search-form">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" name="q" placeholder="Search notes with natural language (e.g., 'show notes on algorithms for final exam')..." value="{{ request.GET.q }}" class="search-input">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </form>
+
+            <!-- Filter Form -->
+            <form method="GET" class="filter-form">
+                <div class="filter-group">
+                    <label for="semester">
+                        <i class="fas fa-calendar-alt"></i>
+                        Semester
+                    </label>
+                    <select name="semester" id="semester" onchange="updateSubjects()">
+                        <option value="">All Semesters</option>
+                        {% for semester in semesters %}
+                        <option value="{{ semester }}" {% if request.GET.semester == semester %}selected{% endif %}>Semester {{ semester }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="subject">
+                        <i class="fas fa-book"></i>
+                        Subject
+                    </label>
+                    <select name="subject" id="subject">
+                        <option value="">All Subjects</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject }}" {% if request.GET.subject == subject %}selected{% endif %}>{{ subject }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="file_type">
+                        <i class="fas fa-file-alt"></i>
+                        File Type
+                    </label>
+                    <select name="file_type" id="file_type">
+                        <option value="">All Types</option>
+                        <option value="pdf" {% if request.GET.file_type == "pdf" %}selected{% endif %}>
+                            <i class="far fa-file-pdf"></i> PDF
+                        </option>
+                        <option value="ppt" {% if request.GET.file_type == "ppt" %}selected{% endif %}>
+                            <i class="far fa-file-powerpoint"></i> PowerPoint
+                        </option>
+                        <option value="docx" {% if request.GET.file_type == "docx" %}selected{% endif %}>
+                            <i class="far fa-file-word"></i> Word Document
+                        </option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="uploaded_by">
+                        <i class="fas fa-user"></i>
+                        Uploaded By
+                    </label>
+                    <select name="uploaded_by" id="uploaded_by">
+                        <option value="">All Contributors</option>
+                        {% for user in users %}
+                        <option value="{{ user }}" {% if request.GET.uploaded_by == user %}selected{% endif %}>{{ user }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit">
+                        <i class="fas fa-filter"></i>
+                        Apply Filters
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i>
+                        Clear All
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tag Cloud -->
+        <div class="tag-cloud">
+            <h3>Popular Tags</h3>
+            <div class="tag-cloud-container">
+                {% for tag, count in popular_tags %}
+                    <a href="{% url 'explore_notes' %}?tag={{ tag|urlencode }}" class="tag {% if active_tag == tag %}active{% endif %}" title="{{ count }} notes">
+                        {{ tag }} <span class="tag-count">({{ count }})</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Search Results Info -->
+        {% if request.GET.q %}
+        <div class="stats-bar">
+            <div class="stats-item">
+                <i class="fas fa-search"></i>
+                <span class="stats-text">Search results for:</span>
+                <strong>"{{ request.GET.q }}"</strong>
+            </div>
+            <div class="stats-item">
+                <span class="stats-number">{{ notes|length }}</span>
+                <span class="stats-text">notes found</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- No Results Message -->
+        {% if notes and not notes|length and request.GET.q %}
+        <div class="empty-state">
+            <i class="fas fa-search-minus"></i>
+            <h3>No Notes Found</h3>
+            <p>No notes match your search criteria. Try adjusting your search terms or filters.</p>
+            <a href="{% url 'explore_notes' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                View All Notes
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Notes Grid -->
+        <div class="notes-grid">
+            {% for note in notes %}
+            <div class="note-card">
+                <div class="note-header">
+                    <div class="note-badges">
+                        <span class="module-badge">
+                            <i class="fas fa-sticky-note"></i>
+                            Notes
+                        </span>
+                        <span class="semester-badge">
+                            <i class="fas fa-layer-group"></i>
+                            Sem {{ note.semester|default:"N/A" }}
+                        </span>
+                    </div>
+                    <h3 class="note-subject">{{ note.subject }}</h3>
+                    <div class="note-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <span>{{ note.uploaded_by.username }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>{{ note.uploaded_at|date:"F j, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="note-body">
+                    <p class="note-title">{{ note.title }}</p>
+                    <p class="note-description">{{ note.description|truncatewords:20 }}</p>
+                </div>
+                
+                {% if note.get_tag_list %}
+                <div class="note-tags" style="margin-top: 0.5rem; display:flex; flex-wrap:wrap; gap:6px;">
+                  {% for tag in note.get_tag_list|slice:":5" %}
+                    <a href="?tag={{ tag|urlencode }}" class="tag-link">#{{ tag }}</a>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="note-actions">
+                    <div class="action-buttons">
+                        <a href="{% url 'download_note' note.id %}" class="download-btn">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </a>
+                        <a href="{% url 'note_detail' note.id %}" class="view-btn">
+                            <i class="fas fa-eye"></i>
+                            View Details
+                        </a>
+                    </div>
+                    <span class="file-type">
+                        <i class="far fa-file-pdf"></i>
+                        PDF
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="far fa-folder-open"></i>
+                <h3>No Notes Yet</h3>
+                <p>Be the first to share your knowledge with the community!</p>
+                <a href="{% url 'upload' %}" class="btn btn-primary">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Upload Note
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        // Define semester-to-subject mapping
+        const semesterSubjects = {
+            "1": ["maths", "C programming", "Physics", "introduction to cyber security", "introduction to design thinking", "electronics and communication"],
+            "2": ["maths", "C++", "Chemistry", "CAED", "Engineering Exploration", "Electrical Engineering"],
+            "3": ["maths", "DSA", "Operating System", "DDCO", "EDC", "Python", "Java", "SCR"],
+            "4": ["maths", "DBMS", "Unix", "IIOT", "DAA", "FSD"],
+            // Add more semesters and their corresponding subjects here
+        };
+
+        function updateSubjects() {
+            const semester = document.getElementById("semester").value;
+            const subjectSelect = document.getElementById("subject");
+
+            // Clear existing subject options
+            subjectSelect.innerHTML = '<option value="">All Subjects</option>';
+
+            // Populate subject options based on the selected semester
+            if (semesterSubjects[semester]) {
+                semesterSubjects[semester].forEach(subject => {
+                    const option = document.createElement("option");
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                });
+            }
+        }
+
+        function clearFilters() {
+            // Clear all select elements
+            document.getElementById("semester").value = "";
+            document.getElementById("subject").value = "";
+            document.getElementById("file_type").value = "";
+            document.getElementById("uploaded_by").value = "";
+            
+            // Reset subjects to show all
+            updateSubjects();
+            
+            // Redirect to page without filters
+            window.location.href = window.location.pathname;
+        }
+
+        // Initialize subjects on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSubjects();
+        });
+    </script>
+</body>
+</html>

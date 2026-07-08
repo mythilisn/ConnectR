@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Note - connectR</title>
+    <style>
+        /* Beautiful color theme variables */
+        :root {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --accent-color: #f97316;
+            --accent-light: #fb923c;
+            --background-color: #f8fafc;
+            --card-color: #ffffff;
+            --text-dark: #1e293b;
+            --text-medium: #475569;
+            --text-light: #64748b;
+            --text-white: #f8fafc;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.8;
+            color: var(--text-dark);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--background-color), #eef2ff);
+            background-attachment: fixed;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 35px;
+            position: relative;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+        
+        h2:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        h3 {
+            font-size: 26px;
+            color: var(--text-dark);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h3:after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-light));
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+        
+        form {
+            background: var(--card-color);
+            padding: 35px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 40px;
+            background-image: linear-gradient(to bottom right, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+            border: 1px solid rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Form styling */
+        form p {
+            margin-bottom: 24px;
+        }
+        
+        form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 16px;
+        }
+        
+        form input, form select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            box-sizing: border-box;
+            background-color: rgba(255,255,255,0.8);
+            color: var(--text-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05) inset;
+        }
+        
+        form input:focus, form select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            background-color: white;
+        }
+        
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            display: block;
+            width: auto;
+            margin: 10px auto 0;
+            min-width: 180px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        hr {
+            border: 0;
+            height: 2px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(99, 102, 241, 0.3), rgba(0, 0, 0, 0));
+            margin: 50px 0;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        }
+        
+        li {
+            background-color: var(--card-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.7);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        li:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+        }
+        
+        li:hover {
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+        
+        li strong {
+            color: var(--primary-dark);
+            font-size: 20px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        li br {
+            margin-bottom: 15px;
+            display: block;
+            content: "";
+        }
+        
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+        }
+        
+        /* Delete link styling */
+        a[href^="{% url 'delete_file'"] {
+            color: var(--danger-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: rgba(239, 68, 68, 0.1);
+            transition: var(--transition);
+        }
+        
+        a[href^="{% url 'delete_file'"]:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+        
+        /* View File link styling */
+        a[href$="target=\"_blank\""] {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: rgba(99, 102, 241, 0.1);
+            margin-right: 10px;
+            transition: var(--transition);
+        }
+        
+        a[href$="target=\"_blank\""]:before {
+            content: "📄";
+            margin-right: 5px;
+        }
+        
+        a[href$="target=\"_blank\""]:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        /* Back to home link */
+        a[href="{% url 'home' %}"] {
+            display: block;
+            width: 180px;
+            margin: 30px auto 0;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-light));
+            padding: 12px 25px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+        
+        a[href="{% url 'home' %}"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+            text-decoration: none;
+        }
+        
+        a[href="{% url 'home' %}"]:before {
+            content: "← ";
+        }
+        
+        /* Empty state styling */
+        ul:has(li:only-child:contains("No notes")) {
+            display: block;
+        }
+        
+        li:only-child {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+            font-style: italic;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            grid-column: 1 / -1;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            ul {
+                grid-template-columns: 1fr;
+            }
+            
+            form {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <body>
+        <h2>Upload Note</h2>
+    
+        <!-- <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload</button>
+        </form>
+
+        <hr> -->
+
+        <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+        </p>
+        <p>
+            <label for="id_description">Description:</label>
+            {{ form.description }}
+        </p>
+        <p>
+            <label for="id_subject">Subject:</label>
+            {{ form.subject }}
+        </p>
+        <p>
+            <label for="id_semester">Semester:</label>
+            {{ form.semester }}
+        </p>
+        <p>
+            <label for="id_file">File:</label>
+            {{ form.file }}
+        </p>
+        <button type="submit">Upload</button>
+    </form>
+
+        <a href="{% url 'home' %}">Back to Home</a>
+        </body>
+    </body>
+    </html>
+    
+    
+    

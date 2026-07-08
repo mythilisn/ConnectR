@@ -1,0 +1,311 @@
+<!-- <!DOCTYPE html>
+<html>
+<style>
+    body {
+    background-color: rgb(19, 19, 19);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+ }
+ h2 {
+    color: rgb(169, 109, 230);
+    font-weight: bold;
+    font-size: 30px;
+    margin-right: 40px;
+    margin-left: 40px;
+    font-family: 'Courier New', Courier, monospace;
+ }
+ a {
+    color: rgb(169, 109, 230);
+    text-decoration: none;
+    font-size: 20px;
+    margin-top: 20px;
+    display: inline-block;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+ }
+    input[type="text"], input[type="password"] {
+        width: 300px;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid ;
+        border-color:  rgb(169, 109, 230);
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    button {
+        background-color: rgb(213, 194, 230);
+        color: rgb(169, 109, 230);
+        font-weight: bold;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        padding: 10px 30px;
+        margin-top: 13px;
+        border: 1px solid;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        border-color:  rgb(169, 109, 230);
+    }
+
+
+</style>
+<head>
+    <title>Login - connectR</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+    <a href="{% url 'register' %}">Don't have an account? Register</a>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - connectR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+    --primary: #7b2cbf; /* Vibrant purple */
+    --primary-light: #c77dff; /* Light purple */
+    --hover-color: #9d4edd; /* Hover blend of purple/blue */
+    --background: #0f0f1b; /* Deep background */
+    --text: #ffffff;
+    --card-bg: #1e1e2f; /* Dark but distinct card background */
+    --box-shadow: 0 8px 20px rgba(123, 44, 191, 0.2);
+}
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            font-family: 'Arial', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 420px;
+            padding: 0;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary) 0%, rgba(130, 80, 180, 1) 100%);
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-header h2 {
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .login-form {
+            padding: 35px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        input[type="text"], 
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid rgba(169, 109, 230, 0.3);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, 
+        input[type="password"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(169, 109, 230, 0.25);
+            outline: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(to right, var(--primary), rgba(130, 80, 180, 1));
+            color: white;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(169, 109, 230, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(169, 109, 230, 0.4);
+            background: linear-gradient(to right, var(--hover-color), rgba(140, 90, 200, 1));
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 5px;
+        }
+
+        a:hover {
+            color: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--text);
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            color: var(--text);
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgotten-password {
+            font-size: 14px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-container {
+                box-shadow: none;
+            }
+
+            .login-header h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <i class="fas fa-book-reader"></i>
+                <h1>connectR</h1>
+            </div>
+            <h2>Welcome Back</h2>
+        </div>
+        
+        <div class="login-form">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                
+                <div class="form-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="{% url 'password_reset' %}" class="forgotten-password">Forgot password?</a>
+                </div>
+                
+                <button type="submit">Login</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="{% url 'register' %}">Don't have an account? Register</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
