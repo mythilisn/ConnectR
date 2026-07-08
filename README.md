@@ -17,9 +17,7 @@
 
 connectR lets students upload, discover, and manage academic notes across semesters and subjects. Its standout feature is AI-powered question generation from uploaded PDFs — turning study material directly into quizzes.
 
-<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/442814a9-d9b9-4474-9439-0ad17a2a78a0" />
-<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/1cc0b143-6ad3-4ba5-8b02-2bb2b762aded" />
-<img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/60737c3b-2bff-4f2d-9ded-3c2360bbbdef" />
+<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/442814a9-d9b9-4474-9439-0ad17a2a78a0" />      <img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/1cc0b143-6ad3-4ba5-8b02-2bb2b762aded" />     <img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/60737c3b-2bff-4f2d-9ded-3c2360bbbdef" />
 
 
 ## Features
