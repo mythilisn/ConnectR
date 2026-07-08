@@ -4,6 +4,7 @@
 
 **A smart academic note-sharing and quiz-generation platform built with Django**
 
+
 ![Django](https://img.shields.io/badge/Django-5.2.6-green.svg)
 ![Python](https://img.shields.io/badge/Python-3.x-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
